@@ -89,5 +89,48 @@ def start():
                 print("Выбери корректный слот!")
                 slot = int(input())
             inventory[slot - 1] = "ключ"
-
+        elif board[y][x] == '#':
+            if 'ключ' in inventory:
+                fl = 0
+                # print("Поздравляю, ты победил!")
+            else:
+                print("Кто-то забыл ключ...")
+        if hp > 0:
+            print("Куда походим? (wasd)")
+            hod = input()
+            flag = 1
+            while flag:
+                if hod == 'w':
+                    if 0 <= y - 1 < len(board):
+                        y = y - 1
+                        flag = 0
+                        break
+                    else:
+                        print("Ты не убежишь за поле!")
+                elif hod == 'a':
+                    if 0 <= x - 1 < len(board[0]):
+                        x = x - 1
+                        flag = 0
+                        break
+                    else:
+                        print("Ты не убежишь за поле!")
+                elif hod == 's':
+                    if 0 <= y + 1 < len(board):
+                        y = y + 1
+                        flag = 0
+                        break
+                    else:
+                        print("Ты не убежишь за поле!")
+                elif hod == 'd':
+                    if 0 <= x + 1 < len(board[0]):
+                        x = x + 1
+                        flag = 0
+                        break
+                    else:
+                        print("Ты не убежишь за поле!")
+                hod = input()
+            open(board, sec_board, x, y)
+            vyvod(board, hp, inventory)
+            # continue
+    print(f"Поздравляю, ты победил! У тебя осталось {hp} хп, а в твоем инветоре осталось: {inventory}")
 start()
