@@ -1,11 +1,13 @@
 import random
 
 
-def vyvod(board):
+def vyvod(board, hp, inv):
     for i in range(len(board)):
         for j in range(len(board[i])):
             print(board[i][j], end=' ')
         print()
+    print(f'{hp} хп, в инвенторе {inv}')
+    print('=====')
 
 
 def generator():
@@ -13,12 +15,18 @@ def generator():
     board = []
     rooms = ['0', '!', '$', '@', '0', '0', '0', '$', '!'] # 0 - пустая, ! - ловушка, $ - сундук, ^ - ключ, # - портал, @ - монстр, * - туман
     l = []
+    game_board = []
     # n = 1
     # m = 2
     for y in range(m):
         for x in range(n):
             l.append(random.choice(rooms))
         board.append(l)
+        l = []
+    for y in range(m):
+        for x in range(n):
+            l.append('*')
+        game_board.append(l)
         l = []
     # обязательно 1 ключ 1 портал
     if '^' not in board:
@@ -32,7 +40,54 @@ def generator():
             x1, y1 = random.randint(0, n), random.randint(0, m)
         board[y1][x1] = '#'
 
-    vyvod(board)
+    # vyvod(game_board)
+    return game_board, board
 
 
-generator()
+def open(board, sec_board, x, y):
+    board[y][x] = sec_board[y][x]
+    return board
+
+
+def start():
+    items = {"меч": 50, "пистолет": 100, "граната": 75}
+    board, sec_board = generator()
+    x, y = 0, 0
+    hp = 100
+    fl = 1
+    inventory = ['', '', '']
+    board = open(board, sec_board, x, y)
+
+    print("Привет, Игрок! Твоя задача найти выход и остаться в живых, но не забудь ключ!")
+    vyvod(board, hp, inventory)
+    while fl:
+        if board[y][x] == '!':
+            print('Ты попал в ловушку! Ты потерял 20 хп')
+            hp -= 20
+        elif board[y][x] == '@':
+            print("Ты забрел к монстру, СРАЖАЙСЯ!")
+            if inventory:
+                print("Ты легко его одолел")
+            else:
+                print("Ты еле выжил")
+                hp -= 70
+        elif board[y][x] == '0':
+            print("Эта комната пуста")
+        elif board[y][x] == '$':
+            print("Ты нашел сундук, что же в нем?")
+            r = random.randint(0, 2)
+            print(f"{[*items.keys()][r]} куда положить? (выбери слот в инветоре)")
+            slot = int(input())
+            while slot > 3 or slot < 1 and inventory[slot] == '':
+                print("Выбери корректный слот!")
+                slot = int(input())
+            inventory[slot - 1] = [*items.keys()][r]
+        elif board[y][x] == '^':
+            print("Ты нашел ключ от портала, куда положить? (Можешь заменить что-то)")
+            slot = int(input())
+            while slot > 3 or slot < 1:
+                print("Выбери корректный слот!")
+                slot = int(input())
+            inventory[slot - 1] = "ключ"
+
+start()
