@@ -55,6 +55,7 @@ def start():
     x, y = 0, 0
     hp = 100
     fl = 1
+    chek = 1
     inventory = ['', '', '']
     board = open(board, sec_board, x, y)
 
@@ -64,6 +65,8 @@ def start():
         if board[y][x] == '!':
             print('Ты попал в ловушку! Ты потерял 20 хп')
             hp -= 20
+            if hp <= 0:
+                chek = 0
         elif board[y][x] == '@':
             print("Ты забрел к монстру, СРАЖАЙСЯ!")
             if inventory:
@@ -71,21 +74,23 @@ def start():
             else:
                 print("Ты еле выжил")
                 hp -= 70
+                if hp <= 0:
+                    chek = 0
         elif board[y][x] == '0':
             print("Эта комната пуста")
         elif board[y][x] == '$':
             print("Ты нашел сундук, что же в нем?")
             r = random.randint(0, 2)
-            print(f"{[*items.keys()][r]} куда положить? (выбери слот в инветоре)")
+            print(f"{[*items.keys()][r]} куда положить? (выбери слот (цифру) в инветоре)")
             slot = int(input())
-            while slot > 3 or slot < 1 and inventory[slot] == '':
+            while slot > 3 or slot < 1:
                 print("Выбери корректный слот!")
                 slot = int(input())
             inventory[slot - 1] = [*items.keys()][r]
         elif board[y][x] == '^':
             print("Ты нашел ключ от портала, куда положить? (Можешь заменить что-то)")
-            slot = int(input())
-            while slot > 3 or slot < 1:
+            slot = input()
+            while int(slot) > 3 or int(slot) < 1:
                 print("Выбери корректный слот!")
                 slot = int(input())
             inventory[slot - 1] = "ключ"
@@ -131,6 +136,11 @@ def start():
                 hod = input()
             open(board, sec_board, x, y)
             vyvod(board, hp, inventory)
-            # continue
-    print(f"Поздравляю, ты победил! У тебя осталось {hp} хп, а в твоем инветоре осталось: {inventory}")
+            if chek == 0:
+                flag = 0
+        else:
+            print("Ты проиграл, у тебя 0 хп!!!")
+            fl = 0
+    if chek:
+        print(f"Поздравляю, ты победил! У тебя осталось {hp} хп, а в твоем инветоре осталось: {inventory}")
 start()
