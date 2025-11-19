@@ -89,7 +89,7 @@ def start():
             inventory[slot - 1] = [*items.keys()][r]
         elif board[y][x] == '^':
             print("Ты нашел ключ от портала, куда положить? (Можешь заменить что-то)")
-            slot = input()
+            slot = int(input())
             while int(slot) > 3 or int(slot) < 1:
                 print("Выбери корректный слот!")
                 slot = int(input())
@@ -105,6 +105,9 @@ def start():
             hod = input()
             flag = 1
             while flag:
+                if sec_board[y][x] == "#" and 'ключ' in inventory:
+                    break
+
                 if hod == 'w':
                     if 0 <= y - 1 < len(board):
                         y = y - 1
